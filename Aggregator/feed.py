@@ -14,16 +14,13 @@ server='myfirstdb.cgl42w3ennqs.us-west-1.rds.amazonaws.com'
 database='myfirstdb'
 username='febin'
 password='febin123'
-
-
+client = MySQLdb.connect(server,username,password,database,cursorclass=MySQLdb.cursors.DictCursor)
+cursor = client.cursor()
+cursor.execute('SET NAMES utf8;')
+cursor.execute('SET CHARACTER SET utf8;')
+cursor.execute('SET character_set_connection=utf8;')
 def writeToDatabase(data):
     try :
-        client = MySQLdb.connect(server,username,password,database,cursorclass=MySQLdb.cursors.DictCursor)
-        client.set_character_set('utf8')
-        cursor = client.cursor()
-        cursor.execute('SET NAMES utf8;')
-        cursor.execute('SET CHARACTER SET utf8;')
-        cursor.execute('SET character_set_connection=utf8;')
         cursor.execute("SELECT * FROM news WHERE link=%s",(data['link'],))
         data['published'] = time.time()
         if cursor.rowcount == 0:
@@ -74,3 +71,4 @@ for source in sources:
         except Exception as e:
             print(e)
 
+client.close()
